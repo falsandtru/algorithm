@@ -1,0 +1,40 @@
+{
+  "name": "algorithm",
+  "version": "0.0.0",
+  "description": "",
+  "private": true,
+  "homepage": "https://github.com/falsandtru/algorithm",
+  "repository": "falsandtru/algorithm",
+  "keywords": [],
+  "main": "dist/raw/algorithm.js",
+  "scripts": {
+    "test": "grunt cov"
+  },
+  "dependencies": {},
+  "devDependencies": {
+    "grunt-cli": "^0.1.13",
+    "grunt-contrib-clean": "^0.6.0",
+    "grunt-contrib-concat": "^0.5.1",
+    "grunt-contrib-copy": "^0.8.0",
+    "grunt-contrib-jshint": "^0.11.2",
+    "grunt-contrib-watch": "^0.6.1",
+    "grunt-shell-spawn": "0.3.8",
+    "grunt-tslint": "^2.2.0-beta",
+    "grunt-typescript": "^0.6.2",
+    "istanbul-harmony": "^0.3.12",
+    "json": "^9.0.3",
+    "mocha": "^2.2.5",
+    "requirejs": "^2.1.18",
+    "should": "^6.0.3",
+    "should-sinon": "0.0.1",
+    "sinon": "^1.14.1",
+    "supertest": "^1.0.1",
+    "typescript": "1.5.0-beta"
+  },
+  "peerDependencies": {},
+  "engines": {
+    "node": ">= 0.10.0"
+  },
+  "author": "falsandtru",
+  "license": "MIT"
+}

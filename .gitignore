@@ -1,0 +1,28 @@
+﻿# binary
+coverage
+dist
+
+# temp
+*.swp
+temp
+
+# secret
+.coveralls.yml
+
+# vm
+.vagrant
+
+# eclipse
+.project
+.metadata
+.settings
+
+# adobe
+_notes
+
+# node
+node_modules
+
+# gh-pages
+gh-pages/coverage
+gh-pages/test
