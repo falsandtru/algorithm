@@ -120,11 +120,14 @@ module.exports = function(grunt) {
         stdout: true,
         stderr: true
       },
+      debug: {
+        command: 'node-debug --node --harmony --exporse_gc --debug-brk node_modules/mocha/bin/_mocha'
+      },
       test: {
-        command: 'node --harmony node_modules/mocha/bin/_mocha'
+        command: 'node --harmony --expose_gc node_modules/mocha/bin/_mocha'
       },
       coverage: {
-        command: 'node --harmony node_modules/istanbul-harmony/lib/cli.js cover node_modules/mocha/bin/_mocha'
+        command: 'node --harmony --expose_gc node_modules/istanbul-harmony/lib/cli.js cover node_modules/mocha/bin/_mocha'
       },
       dev: {
         options: { async: true },
@@ -146,9 +149,10 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-contrib-clean');
   grunt.loadNpmTasks('grunt-shell-spawn');
 
-  grunt.registerTask('build', ['tslint', 'typescript:build', 'concat', 'copy']);
+  grunt.registerTask('build', ['tslint:source', 'typescript:build', 'concat', 'copy']);
   grunt.registerTask('dev', ['shell:dev', 'watch']);
+  grunt.registerTask('debug', ['build', 'shell:debug']);
   grunt.registerTask('test', ['build', 'shell:test']);
   grunt.registerTask('cov', ['build', 'shell:coverage']);
-  grunt.registerTask('dist', ['clean', 'tslint', 'typescript:dist', 'concat', 'copy', 'clean:temp']);
+  grunt.registerTask('dist', ['clean', 'tslint:source', 'typescript:dist', 'concat', 'copy', 'clean:temp']);
 };

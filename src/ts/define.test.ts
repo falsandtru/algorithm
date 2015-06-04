@@ -3,43 +3,61 @@
 /// <reference path=".d/should.d.ts"/>
 
 module TEST {
-  const stdin = process.stdin;
+  //const stdin = process.stdin;
   const stdout = process.stdout;
 
-  export function write(logic: () => void, test: (output: string) => void) {
-    capture_stdout(test);
-    logic();
-    return;
+  module MEASURE {
+    var time: number,
+        memory: number;
+    export function begin() {
+      //global.gc();
+      time = Date.now();
+      memory = process.memoryUsage().rss;
+      capture_begin();
+    }
+    export function end(callback: (data: string[]) => any) {
+      process.nextTick(() => capture_end(callback));
+      //console.log(Date.now() - time + 'ms', (process.memoryUsage().rss - memory) / 1024 + 'KB');
+    }
 
-    function capture_stdout(callback: (data: string) => any) {
-      const write = stdout.write.bind(stdout);
-
+    const write = stdout.write;
+    var outputs = [];
+    function capture_begin() {
+      outputs = [];
       stdout.write = function (data) {
-        stdout.write = write;
-        callback(data);
+        outputs.push(data);
         return true;
       };
     }
+    function capture_end(callback: (data: string[]) => any) {
+      stdout.write = write;
+      callback(outputs);
+    }
   }
 
-  export function std(input: string, logic: () => void, test: (output: string) => void) {
-    stdin.resume();
-    stdin.setEncoding('utf8');
-    stdin.once('data', () => {
-      stdin.once('data', test);
-    });
-    redirect_stdout();
+  export function write(logic: () => void, test: (outputs: string[]) => void) {
+    MEASURE.begin();
     logic();
-    stdin.emit('data', input);
+    MEASURE.end(test);
+    return;
+  }
+
+  export function std(input: string, logic: () => void, test: (outputs: string[]) => void) {
+    redirect_readFileSync();
+    MEASURE.begin();
+    logic();
+    MEASURE.end(test);
     return;
 
-    function redirect_stdout() {
-      const write = stdout.write;
+    function redirect_readFileSync() {
+      const read = require('fs').readFileSync;
 
-      stdout.write = function (data) {
-        stdout.write = write;
-        stdin.emit('data', data);
-        return true;
+      require('fs').readFileSync = function (path, ops) {
+        if (path === '/dev/stdin' && ops === 'utf8') {
+          require('fs').readFileSync = read;
+          return require('fs').readFileSync(input, 'utf8');
+        }
+        return read.apply(require('fs'), arguments);
       };
     }
   }
@@ -54,24 +72,23 @@ describe('TEST', () => {
     function proc() {
       process.stdout.write(input);
     }
-    function test(output: string) {
-      output.should.equal(input);
+    function test(outputs: string[]) {
+      outputs.join('').should.equal(input);
       done();
     }
   });
 
   it('std', done => {
-    const input = 'algorithm\n';
+    const input = 'src/ts/input.txt';
     TEST.std(input, proc, test);
     return;
 
     function proc() {
-      process.stdin.once('data', (input: string) => {
-        process.stdout.write(input + input);
-      });
+      const input = require('fs').readFileSync('/dev/stdin', 'utf8');
+      process.stdout.write(input);
     }
-    function test(output: string) {
-      output.should.containEql(input + input);
+    function test(outputs: string[]) {
+      outputs.join('').should.containEql('algorithm');
       done();
     }
   });
