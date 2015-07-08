@@ -39,18 +39,18 @@ module AOJ {
       return result[1];
     }
     function push<T>(stack: T[], data: T): [T[]] {
+      if (isFull(stack)) { throw 1; }
       return [[data].concat(stack)];
     }
     function pop<T>(stack: T[]): [T[], T] {
+      if (isEmpty(stack)) { throw 1; }
       return [stack.slice(1), stack[0]];
     }
     function isEmpty(stack: any[]): boolean {
       return stack.length === 0;
     }
-    /*
     function isFull(stack: any[]): boolean {
       return stack.length > 100;
     }
-    */
   }
 }
